@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    input {
+        margin-right: 15px;
+    }
+
+    input:nth-child(1) {
+        width: 180px;
+        margin-bottom: 15px;
+    }
+
+    input:nth-child(2) {
+        margin-bottom: 15px;
+        width: 120px;
+    }
+
+    p {
+        display: inline-block;
+    }
+</style>
+
+<body>
+    <form name="zapravka">
+        <input list="listD" id="fuelType" placeholder="Выберите Тип Топлива" type="text">
+        <div>Стоимость за литр <p id="price"></p>
+        </div><br><input id="klv" placeholder="Кл-во Литров" type="number" min="1" max="100">
+        <br>
+        Оплата
+        <br>
+        <br>
+        <input name="pay" type="radio" value="EU">EU
+        <input name="pay" type="radio" value="UAH">UAH
+        <input name="pay" type="radio" value="USD">USD
+        <br>
+        <p id="summ">Суммма - </p>
+        <br><input type="submit" placeholder="OK">
+    </form>
+    <datalist id="listD">
+        <option value="95">95</option>
+        <option value="92">92</option>
+        <option value="Люкс">Люкс</option>
+    </datalist>
+    <script>
+        let price = document.querySelector("#price");
+        let klv = document.querySelector("#klv");
+        let valuta = document.querySelectorAll('input[name = "pay"]')
+        let summ = document.querySelector("#summ");
+
+        function selCur() {
+            let valutaChecked = document.querySelector('input[name = "pay"]:checked');
+            if (valutaChecked) {
+                return valutaChecked.value;
+            }
+            else {
+                return 0;
+            }
+        }
+
+        function check(e) {
+            let fPrice = 0;
+            if (e.target.value == 95) {
+                fPrice = 125;
+                price.innerHTML = "125 $";
+            } else if (e.target.value == 92) {
+                fPrice = 115;
+                price.innerHTML = "115 $";
+            } else if (e.target.value == "Люкс") {
+                fPrice = 140;
+                price.innerHTML = "140 $";
+            } else {
+                price.innerHTML = "";
+            }
+
+            let valut = selCur();
+            if (valut && klv.value) {
+                let znak = "";
+                if (valut === "USD") {
+                    znak = "$";
+                } else if (valut === "EU") {
+                    znak = "€";
+                } else if (valut === "UAH") {
+                    znak = "₴";
+                }
+                summ.innerHTML = "Сумма - " + (fPrice * klv.value) + " " + znak;
+            }
+        }
+        document.querySelector("#fuelType").addEventListener("input", check);
+        klv.addEventListener("input", check);
+        valuta.forEach(radio => 
+        radio.addEventListener('change', check));
+    </script>
+</body>
+
+</html>
